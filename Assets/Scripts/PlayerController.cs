@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private Animator animator;
-    bool isRunning, isJump;
+    public Animator animator;
     public BoxCollider2D PlayerCollider;
     private float sizeX, sizeY;
+    public float speed;
 
 
     
@@ -21,39 +21,36 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        
-        PlayerRun();
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        PlayerRun(horizontal);
+        MoveCharacter(horizontal);
         PlayerCrouch();
         PlayerJump();
 
     }
-    void PlayerRun()
+    void MoveCharacter(float horizontal)
     {
-        float Horizontal = Input.GetAxisRaw("Horizontal");
-        
-        if (Horizontal != 0 && !isRunning)
-        {
+        Vector3 position = transform.position;
+        position.x += horizontal * speed * Time.deltaTime;
+        transform.position = position;
 
+    }
+    void PlayerRun(float horizontal)
+    {
+        
             animator.SetBool("isRunning", true);
-            animator.SetFloat("Speed", Mathf.Abs(Horizontal));
-            isRunning = true;
+            animator.SetFloat("Speed", Mathf.Abs(horizontal));
 
             Vector3 scale = transform.localScale;
-            if (Horizontal < 0)
+            if (horizontal < 0)
             {
                 scale.x = -1f * Mathf.Abs(scale.x);
             }
-            else if (Horizontal > 0)
+            else if (horizontal > 0)
             {
                 scale.x = Mathf.Abs(scale.x);
             }
             transform.localScale = scale;
-        }
-        else
-        {
-            isRunning = false;
-            animator.SetBool("isRunning", false);
-        }
     }
     void PlayerCrouch()
     {
@@ -73,16 +70,12 @@ public class PlayerController : MonoBehaviour
     void PlayerJump()
     {
         float vertical = Input.GetAxisRaw("Vertical");
-        if (vertical != 0 && !isJump)
+        if (vertical != 0)
         {
-
             animator.SetBool("isJump", true);
-            isJump = true;
-
         }
         else
         {
-            isJump = false;
             animator.SetBool("isJump", false);
         }
     }
