@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
     public BoxCollider2D PlayerCollider;
     private float sizeX, sizeY;
     public float speed;
+    public float jump;
+    private Rigidbody2D rb2d;
 
 
     
@@ -17,22 +19,30 @@ public class PlayerController : MonoBehaviour
         PlayerCollider = GetComponent<BoxCollider2D>();
         sizeX = PlayerCollider.size.x;
         sizeY = PlayerCollider.size.y;
+        rb2d = gameObject.GetComponent<Rigidbody2D>();
     }
 
     private void Update()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Jump");
         PlayerRun(horizontal);
-        MoveCharacter(horizontal);
+        MoveCharacter(horizontal, vertical);
         PlayerCrouch();
-        PlayerJump();
+        PlayerJump(vertical);
 
     }
-    void MoveCharacter(float horizontal)
+    void MoveCharacter(float horizontal,float vertical)
     {
+        // horizonyal movement
         Vector3 position = transform.position;
         position.x += horizontal * speed * Time.deltaTime;
         transform.position = position;
+        // vertical movement
+        if (vertical > 0)
+        {
+            rb2d.AddForce(Vector2.up*jump);
+        }
 
     }
     void PlayerRun(float horizontal)
@@ -67,10 +77,9 @@ public class PlayerController : MonoBehaviour
             Debug.Log("player is not crouched");
         }
     }
-    void PlayerJump()
+    void PlayerJump(float vertical)
     {
-        float vertical = Input.GetAxisRaw("Vertical");
-        if (vertical != 0)
+        if (vertical > 0)
         {
             animator.SetBool("isJump", true);
         }
