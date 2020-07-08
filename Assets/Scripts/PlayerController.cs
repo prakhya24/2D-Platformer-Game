@@ -47,8 +47,7 @@ public class PlayerController : MonoBehaviour
     }
     void PlayerRun(float horizontal)
     {
-        
-            animator.SetBool("isRunning", true);
+          animator.SetBool("isRunning", true);
             animator.SetFloat("Speed", Mathf.Abs(horizontal));
 
             Vector3 scale = transform.localScale;
@@ -61,6 +60,7 @@ public class PlayerController : MonoBehaviour
                 scale.x = Mathf.Abs(scale.x);
             }
             transform.localScale = scale;
+       
     }
     void PlayerCrouch()
     {
